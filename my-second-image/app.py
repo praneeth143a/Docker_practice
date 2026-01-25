@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Second image is working"
+    return "Flask_test is working"
 
-app.run(host="0.0.0.0", port=5005)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
