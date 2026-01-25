@@ -1,4 +1,4 @@
-# Step-by-step process to crate a base image.
+# Step-by-step process to create a base image.
 
 Remember this a basic image structure, need to memorize it.
 
