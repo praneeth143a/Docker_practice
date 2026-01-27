@@ -17,7 +17,7 @@ echo "tag the docker image"
 docker tag ci-test-app praneethkumar27/ci-test-app
 
 echo "login into docker"
-docker login
+docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
 echo "push the image to docker hub"
 docker push praneethkumar27/ci-test-app
