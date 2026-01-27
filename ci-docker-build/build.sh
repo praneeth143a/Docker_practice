@@ -7,7 +7,7 @@ set -e   #to stop script on error
 #DOCKER_USERNAME="praneethkumar27"
 #DOCKER_IMAGE="ci-test-app"
 #IMAGE_TAG="latest"
-#FULL_IMAGE_NAME="praneethkumar27/ci-test-app"
+FULL_IMAGE_NAME="praneethkumar27/ci-test-app"
 
 
 echo "build the docker image"
