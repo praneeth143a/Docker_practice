@@ -2,7 +2,6 @@
 
 set -e   #to stop script on error
 
-
 #we can use variables also for easy script
 
 #DOCKER_USERNAME="praneethkumar27"
