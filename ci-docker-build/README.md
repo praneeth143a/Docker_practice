@@ -1,29 +1,29 @@
-# Step-by-step process
+# Step-by-Step Process
 
 This project demonstrates a mini CI (Continuous Integration) pipeline using Docker and Bash scripting.
-It automates the process of building a Docker image, tagging it, logging in to Docker Hub, and pushing the image to a remote container registry.
 
-This project is designed to simulate how CI pipelines work in real DevOps environments
+It automates:
+  - Building a Docker image
+  - Tagging the image
+  - Logging into Docker Hub
+  - Pushing the image to a remote registry
+  - Running the container automatically
+This simulates how CI pipelines work in real DevOps environments.
 
 # Project Overview
-
  - Application is containerized using Docker
-
  - Docker image build and push is automated using a Bash script
-
  - Image is pushed to Docker Hub
-
- - Mimics CI behavior using ``` set -e ``` to stop on failure
+ - CI behavior is simulated using ```set -e``` (fail-fast execution)
+ - Container is automatically deployed after build
 
 # Technologies Used
 
  - Docker
-
  - Bash (Shell Scripting)
-
  - Python
+ - Docker Hub (Container Registry)
 
- - Docker Hub (Image Registry)
 
 # Project Structure
 ```
@@ -34,45 +34,84 @@ This project is designed to simulate how CI pipelines work in real DevOps enviro
            |    |-- Dockerfile
            |    |-- app.py
            | 
-           |-- build.sh
+           ├── build.sh
+           └── README.md
 
 ```
 
 # Dockerfile
 ```
 FROM python:3.10-alpine
+
 WORKDIR /app
+
 COPY app.py .
+
+RUN pip install flask
+
+EXPOSE 5000
+
 CMD ["python", "app.py"]
 ```
 
  # app.py
  ```
-print("Hey, you have successfully image is pushed to Dockerhub.")
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hi, This is mini ci-test-pipeline 🚀"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 ```
 
 # build.sh (bash file)
 ```
 #!/bin/bash
 
-set -e #to stop the script if any command fails.
+set -e
 
-echo " building the image "
-docker build -t ci-docker ./app 
+DOCKER_USERNAME="praneethkumar27"
+DOCKER_IMAGE="ci-test-app"
+IMAGE_TAG="latest"
+FULL_IMAGE_NAME="praneethkumar27/ci-test-app"
 
-echo " Tagging the docker image "
-docker tag ci-docker praneethkumar27/ci-docker:latest    #here, praneethkumar27 is my dockerhub username, while tagging give you're docker_username
+CONTAINER_NAME="ci-test-container"
+APP_PORT=5000
 
-echo " login to DockerHub "
-docker login -u #docker_username -p #docker_password
+echo "====================Build the docker image================="
+docker build -t ci-test-app ./app
 
-echo " push the image into dockerhub "
-docker push praneethkumar27/ci-docker:latest
+echo "=====================Tag the docker image====================="
+docker tag ci-test-app praneethkumar27/ci-test-app
 
-echo " Successfully image is pushed into DockerHub "
+echo "=====================Login into docker=================="
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+echo "==================Push the image to docker hub======================"
+docker push praneethkumar27/ci-test-app
+
+echo "=================image pushed successfully======================="
+
+echo "==================Remove old container if exists======================"
+if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+    docker stop $CONTAINER_NAME || true
+    docker rm $CONTAINER_NAME || true
+fi
+
+echo "==================Run the container======================"
+docker run -d -p $APP_PORT:$APP_PORT --name $CONTAINER_NAME praneethkumar27/ci-test-app
+
+echo "=================image pushed and running successfully======================="
+echo "APP: http://localhost:$APP_PORT"
 
 ```
-# Process to run the project
+
+
+# Process to Run the Project
 
 1. Clone the repository
    ```
@@ -84,25 +123,50 @@ echo " Successfully image is pushed into DockerHub "
    ```
    chmod +x build.sh
    ```
-3. Run the script
+3. Set Docker Access Token
+   ```
+   export DOCKER_PASSWORD=your_docker_access_token
+   ```
+
+4. Run the Build & Push Script
    ```
    ./build.sh
    ```
 
-4. Run the Docker image
+This will:
+ - Build Docker image
+ - Tag image
+ - Login to Docker Hub
+ - Push image
+
+5. Run the Docker Container
    ```
-   docker run praneethkumar27/ci-test-app
+   docker run -d -p 5000:5000 --name ci-test-container praneethkumar27/ci-test-app
+   ```
+   
+6. Access the Application
+   Open in browser:
+   ```
+    http://localhost:5000
    ```
 
+# Notes
+  - Ensure Docker is installed and running
+  - Use Docker Hub Access Token, not password
+  - Application must bind to 0.0.0.0
+  
+  - If port is busy:
+    ```
+    docker run -d -p 5001:5000 praneethkumar27/ci-test-app
+    ```
+   
 # Key Learnings
 
- - Automating Docker builds using shell scripts
-
- - Image tagging and versioning
-
+ - Automating Docker builds using shell scripting
+ - Docker image tagging and versioning
+ - Secure authentication using environment variables
  - Pushing images to Docker Hub
-
  - Understanding CI concepts like fail-fast execution
-
+ - Running containerized applications
  - Hands-on practice with Docker-based CI pipelines
 
