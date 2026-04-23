@@ -86,7 +86,7 @@ echo " Successfully image is pushed into DockerHub "
    ```
 3. Run the script
    ```
-   ./build_and_push.sh
+   ./build.sh
    ```
 
 4. Run the Docker image
