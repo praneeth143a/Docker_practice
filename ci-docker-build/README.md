@@ -141,7 +141,7 @@ This will:
 
 5. Run the Docker Container
    ```
-   docker run -d -p 5000:5000 --name ci-test-container praneethkumar27/ci-test-app
+   docker run -d -p 5000:5000 praneethkumar27/ci-test-app
    ```
    
 6. Access the Application
